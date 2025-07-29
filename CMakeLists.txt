@@ -26,3 +26,5 @@ add_executable (${PROJECT_NAME} src/main.cpp )
 # target_link_libraries(${PROJECT_NAME} PUBLIC ${OpenCV_LIBS} )
 # target_link_libraries(${PROJECT_NAME} PUBLIC tensorrt_cpp_api )
 
+# Install rule
+install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION /usr/local/bin)
