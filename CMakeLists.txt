@@ -1,30 +1,23 @@
-cmake_minimum_required(VERSION 3.15)
-project(hello_world)
+cmake_minimum_required(VERSION 3.16)
+project(SimpleQtApp LANGUAGES CXX)
 
-# Set C++ version and optimization level
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Ofast -DNDEBUG -Wno-deprecated-declarations")
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# For finding FindTensorRT.cmake
-# set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
+# Try to find Qt6 first, fallback to Qt5
+find_package(Qt6 COMPONENTS Widgets QUIET)
+if(Qt6_FOUND)
+    set(QT_VERSION 6)
+    set(QT_LIBRARIES Qt6::Widgets)
+else()
+    find_package(Qt5 COMPONENTS Widgets REQUIRED)
+    set(QT_VERSION 5)
+    set(QT_LIBRARIES Qt5::Widgets)
+endif()
 
-# Use the correct version of CUDA
-# set(CUDA_TOOLKIT_ROOT_DIR /usr/local/cuda)
+add_executable(SimpleQtApp src/main.cpp)
 
-# find_package(OpenCV 4.8.1 EXACT REQUIRED)
-# find_package(TensorRT REQUIRED)
-# find_package(CUDA REQUIRED)
+target_link_libraries(SimpleQtApp PRIVATE ${QT_LIBRARIES})
 
-# include_directories(${OpenCV_INCLUDE_DIRS} include )
-
-# Add TensorRT helper library
-# add_library(tensorrt_cpp_api SHARED src/engine.cpp)
-# target_include_directories(tensorrt_cpp_api PUBLIC ${OpenCV_INCLUDE_DIRS} ${CUDA_INCLUDE_DIRS} ${TensorRT_INCLUDE_DIRS})
-# target_link_libraries(tensorrt_cpp_api PUBLIC ${OpenCV_LIBS} ${CUDA_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${TensorRT_LIBRARIES})
-
-add_executable (${PROJECT_NAME} src/main.cpp )
-# target_link_libraries(${PROJECT_NAME} PUBLIC ${OpenCV_LIBS} )
-# target_link_libraries(${PROJECT_NAME} PUBLIC tensorrt_cpp_api )
-
-# Install rule
-install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION /usr/local/bin)
+# Optional: Print which Qt version is being used
+message(STATUS "Using Qt${QT_VERSION}")
